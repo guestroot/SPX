@@ -1,9 +1,9 @@
 Gitian building
 ================
 
-*Setup instructions for a Gitian build of Litecoin Core using a Debian VM or physical system.*
+*Setup instructions for a Gitian build of SPX Core using a Debian VM or physical system.*
 
-Gitian is the deterministic build process that is used to build the Litecoin
+Gitian is the deterministic build process that is used to build the SPX
 Core executables. It provides a way to be reasonably sure that the
 executables are really built from the source on GitHub. It also makes sure that
 the same, tested dependencies are used and statically built into the executable.
@@ -11,7 +11,7 @@ the same, tested dependencies are used and statically built into the executable.
 Multiple developers build the source code by following a specific descriptor
 ("recipe"), cryptographically sign the result, and upload the resulting signature.
 These results are compared and only if they match, the build is accepted and uploaded
-to litecoin.org.
+to SPX.org.
 
 More independent Gitian builders are needed, which is why this guide exists.
 It is preferred you follow these steps yourself instead of using someone else's
@@ -26,7 +26,7 @@ Table of Contents
 - [Installing Gitian](#installing-gitian)
 - [Setting up the Gitian image](#setting-up-the-gitian-image)
 - [Getting and building the inputs](#getting-and-building-the-inputs)
-- [Building Litecoin Core](#building-litecoin-core)
+- [Building SPX Core](#building-SPX-core)
 - [Building an alternative repository](#building-an-alternative-repository)
 - [Signing externally](#signing-externally)
 - [Uploading signatures](#uploading-signatures)
@@ -309,12 +309,12 @@ cd ..
 
 **Note**: When sudo asks for a password, enter the password for the user *debian* not for *root*.
 
-Clone the git repositories for litecoin and Gitian.
+Clone the git repositories for SPX and Gitian.
 
 ```bash
 git clone https://github.com/devrandom/gitian-builder.git
-git clone https://github.com/litecoin-project/litecoin
-git clone https://github.com/litecoin-project/gitian.sigs.ltc.git
+git clone https://github.com/SPX-project/SPX
+git clone https://github.com/SPX-project/gitian.sigs.SPX.git
 ```
 
 Setting up the Gitian image
@@ -343,16 +343,16 @@ Getting and building the inputs
 At this point you have two options, you can either use the automated script (found in [contrib/gitian-build.sh](/contrib/gitian-build.sh)) or you could manually do everything by following this guide. If you're using the automated script, then run it with the "--setup" command. Afterwards, run it with the "--build" command (example: "contrib/gitian-building.sh -b signer 0.13.0"). Otherwise ignore this.
 
 Follow the instructions in [doc/release-process.md](release-process.md#fetch-and-create-inputs-first-time-or-when-dependency-versions-change)
-in the litecoin repository under 'Fetch and create inputs' to install sources which require
+in the SPX repository under 'Fetch and create inputs' to install sources which require
 manual intervention. Also optionally follow the next step: 'Seed the Gitian sources cache
 and offline git repositories' which will fetch the remaining files required for building
 offline.
 
-Building Litecoin Core
+Building SPX Core
 ----------------
 
-To build Litecoin Core (for Linux, OS X and Windows) just follow the steps under 'perform
-Gitian builds' in [doc/release-process.md](release-process.md#perform-gitian-builds) in the litecoin repository.
+To build SPX Core (for Linux, OS X and Windows) just follow the steps under 'perform
+Gitian builds' in [doc/release-process.md](release-process.md#perform-gitian-builds) in the SPX repository.
 
 This may take some time as it will build all the dependencies needed for each descriptor.
 These dependencies will be cached after a successful build to avoid rebuilding them when possible.
@@ -366,12 +366,12 @@ tail -f var/build.log
 
 Output from `gbuild` will look something like
 
-    Initialized empty Git repository in /home/debian/gitian-builder/inputs/litecoin/.git/
+    Initialized empty Git repository in /home/debian/gitian-builder/inputs/SPX/.git/
     remote: Counting objects: 57959, done.
     remote: Total 57959 (delta 0), reused 0 (delta 0), pack-reused 57958
     Receiving objects: 100% (57959/57959), 53.76 MiB | 484.00 KiB/s, done.
     Resolving deltas: 100% (41590/41590), done.
-    From https://github.com/litecoin-project/litecoin
+    From https://github.com/SPX-project/SPX
     ... (new tags, new branch etc)
     --- Building for trusty amd64 ---
     Stopping target if it is up
@@ -397,18 +397,18 @@ and inputs.
 
 For example:
 ```bash
-URL=https://github.com/thrasher-/litecoin.git
+URL=https://github.com/thrasher-/SPX.git
 COMMIT=2014_03_windows_unicode_path
-./bin/gbuild --commit litecoin=${COMMIT} --url litecoin=${URL} ../litecoin/contrib/gitian-descriptors/gitian-linux.yml
-./bin/gbuild --commit litecoin=${COMMIT} --url litecoin=${URL} ../litecoin/contrib/gitian-descriptors/gitian-win.yml
-./bin/gbuild --commit litecoin=${COMMIT} --url litecoin=${URL} ../litecoin/contrib/gitian-descriptors/gitian-osx.yml
+./bin/gbuild --commit SPX=${COMMIT} --url SPX=${URL} ../SPX/contrib/gitian-descriptors/gitian-linux.yml
+./bin/gbuild --commit SPX=${COMMIT} --url SPX=${URL} ../SPX/contrib/gitian-descriptors/gitian-win.yml
+./bin/gbuild --commit SPX=${COMMIT} --url SPX=${URL} ../SPX/contrib/gitian-descriptors/gitian-osx.yml
 ```
 
 Building fully offline
 -----------------------
 
 For building fully offline including attaching signatures to unsigned builds, the detached-sigs repository
-and the litecoin git repository with the desired tag must both be available locally, and then gbuild must be
+and the SPX git repository with the desired tag must both be available locally, and then gbuild must be
 told where to find them. It also requires an apt-cacher-ng which is fully-populated but set to offline mode, or
 manually disabling gitian-builder's use of apt-get to update the VM build environment.
 
@@ -427,7 +427,7 @@ cd /path/to/gitian-builder
 LXC_ARCH=amd64 LXC_SUITE=trusty on-target -u root apt-get update
 LXC_ARCH=amd64 LXC_SUITE=trusty on-target -u root \
   -e DEBIAN_FRONTEND=noninteractive apt-get --no-install-recommends -y install \
-  $( sed -ne '/^packages:/,/[^-] .*/ {/^- .*/{s/"//g;s/- //;p}}' ../litecoin/contrib/gitian-descriptors/*|sort|uniq )
+  $( sed -ne '/^packages:/,/[^-] .*/ {/^- .*/{s/"//g;s/- //;p}}' ../SPX/contrib/gitian-descriptors/*|sort|uniq )
 LXC_ARCH=amd64 LXC_SUITE=trusty on-target -u root apt-get -q -y purge grub
 LXC_ARCH=amd64 LXC_SUITE=trusty on-target -u root -e DEBIAN_FRONTEND=noninteractive apt-get -y dist-upgrade
 ```
@@ -447,12 +447,12 @@ Then when building, override the remote URLs that gbuild would otherwise pull fr
 ```bash
 
 cd /some/root/path/
-git clone https://github.com/litecoin-project/litecoin-detached-sigs.git
+git clone https://github.com/SPX-project/SPX-detached-sigs.git
 
-BTCPATH=/some/root/path/litecoin
-SIGPATH=/some/root/path/litecoin-detached-sigs
+BTCPATH=/some/root/path/SPX
+SIGPATH=/some/root/path/SPX-detached-sigs
 
-./bin/gbuild --url litecoin=${BTCPATH},signature=${SIGPATH} ../litecoin/contrib/gitian-descriptors/gitian-win-signer.yml
+./bin/gbuild --url SPX=${BTCPATH},signature=${SIGPATH} ../SPX/contrib/gitian-descriptors/gitian-win-signer.yml
 ```
 
 Signing externally
@@ -467,9 +467,9 @@ When you execute `gsign` you will get an error from GPG, which can be ignored. C
 in `gitian.sigs` to your signing machine and do
 
 ```bash
-    gpg --detach-sign ${VERSION}-linux/${SIGNER}/litecoin-linux-build.assert
-    gpg --detach-sign ${VERSION}-win/${SIGNER}/litecoin-win-build.assert
-    gpg --detach-sign ${VERSION}-osx-unsigned/${SIGNER}/litecoin-osx-build.assert
+    gpg --detach-sign ${VERSION}-linux/${SIGNER}/SPX-linux-build.assert
+    gpg --detach-sign ${VERSION}-win/${SIGNER}/SPX-win-build.assert
+    gpg --detach-sign ${VERSION}-osx-unsigned/${SIGNER}/SPX-osx-build.assert
 ```
 
 This will create the `.sig` files that can be committed together with the `.assert` files to assert your
@@ -479,5 +479,5 @@ Uploading signatures
 ---------------------
 
 After building and signing you can push your signatures (both the `.assert` and `.assert.sig` files) to the
-[litecoin-project/gitian.sigs.ltc](https://github.com/litecoin-project/gitian.sigs.ltc/) repository, or if that's not possible create a pull
+[SPX-project/gitian.sigs.SPX](https://github.com/SPX-project/gitian.sigs.SPX/) repository, or if that's not possible create a pull
 request. You can also mail the files to thrasher (thrasher@addictionsofware.com) and he will commit them.
